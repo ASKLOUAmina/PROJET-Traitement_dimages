@@ -1,0 +1,45 @@
+clear all;
+close all;
+clc;
+
+nb_classe = 4; % défini le nombre de classes
+nb_image = 30; % défini le nombre d'images par classe
+chemin = 'Base\';
+nb_ima = nb_classe*nb_image;
+nb_ima_train = nb_ima/6;	
+% pour chaque classe, seul un objet sur 6 est utilisé pour l'apprentissage
+Attributs = zeros(nb_ima_train, 8);
+
+%% Apprentisage
+ima_label=0;
+for i_train=1:nb_ima
+    if (((1<=i_train)&&(i_train<=5))||((31<=i_train)&&(i_train<=35))||((61<=i_train)&&(i_train<=65))||((91<=i_train)&&(i_train<=95)))
+        ima_label=ima_label+1;
+        % Enregistrement du numéro de la classe dans un tableau
+        num_classe_train(ima_label) = floor((i_train-1)/nb_image) + 1;
+        % Concaténaion des chaînes de caractères
+        % pour constituer le chemain d'accès au fichier image
+        if (i_train/10 < 1)
+            fichier_train = [chemin '00000' int2str(i_train) '.png'];
+        else
+            if (i_train/100 < 1)
+                fichier_train = [chemin '0000' int2str(i_train) '.png'];
+            else
+                fichier_train = [chemin '000' int2str(i_train) '.png'];
+            end
+        end
+        % Affichage du numéro de la classe
+        disp([fichier_train ' Classe '  int2str(num_classe_train(ima_label))]);
+
+        % Ouverture de l'image
+        Ima_train = imread(fichier_train);
+
+        % Conversion en niveaux de gris
+        Ima_gray = rgb2gray(Ima_train);
+				
+        % Ajouter ici si nécessaire des opérations de prétraitement
+
+        % Extraction des attributs de forme
+        Attributs(ima_label,:) = AttributsForme(Ima_gray);  
+    end
+end
